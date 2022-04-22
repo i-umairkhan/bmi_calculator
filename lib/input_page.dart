@@ -7,6 +7,7 @@ const bottomContainerHight = 80.0;
 const Color bottomContainerColor = Color(0xFFEB1555);
 const Color inactiveCardColor = Color(0xFF111328);
 const Color activeCardColor = Color(0xFF1D1E33);
+enum Genders { male, female }
 
 class InputPage extends StatefulWidget {
   const InputPage({Key? key}) : super(key: key);
@@ -19,8 +20,8 @@ class _InputPageState extends State<InputPage> {
   Color maleCardColor = inactiveCardColor;
   Color femaleCardColor = inactiveCardColor;
 
-  void updateColor(int gender) {
-    if (gender == 1) {
+  void updateColor(Genders gender) {
+    if (gender == Genders.male) {
       if (maleCardColor == inactiveCardColor) {
         maleCardColor = activeCardColor;
         femaleCardColor = inactiveCardColor;
@@ -28,7 +29,7 @@ class _InputPageState extends State<InputPage> {
         maleCardColor = inactiveCardColor;
       }
     }
-    if (gender == 2) {
+    if (gender == Genders.female) {
       if (femaleCardColor == inactiveCardColor) {
         femaleCardColor = activeCardColor;
         maleCardColor = inactiveCardColor;
@@ -53,7 +54,13 @@ class _InputPageState extends State<InputPage> {
                   child: GestureDetector(
                     onTap: (() => setState(
                           () {
-                            updateColor(1);
+                            // updateColor(Genders.male);
+                            maleCardColor == inactiveCardColor
+                                ? {
+                                    maleCardColor = activeCardColor,
+                                    femaleCardColor = inactiveCardColor
+                                  }
+                                : maleCardColor = inactiveCardColor;
                           },
                         )),
                     child: ReusableCard(
@@ -69,7 +76,13 @@ class _InputPageState extends State<InputPage> {
                   child: GestureDetector(
                     onTap: (() => setState(
                           () {
-                            updateColor(2);
+                            // updateColor(Genders.female);
+                            femaleCardColor == inactiveCardColor
+                                ? {
+                                    femaleCardColor = activeCardColor,
+                                    maleCardColor = inactiveCardColor
+                                  }
+                                : femaleCardColor = inactiveCardColor;
                           },
                         )),
                     child: ReusableCard(
