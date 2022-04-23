@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import './reusable_card.dart';
 import './icon_content.dart';
+import './constants.dart';
 
-const bottomContainerHight = 80.0;
-const Color bottomContainerColor = Color(0xFFEB1555);
-const Color inactiveCardColor = Color(0xFF111328);
-const Color activeCardColor = Color(0xFF1D1E33);
 enum Genders { male, female }
 
 class InputPage extends StatefulWidget {
@@ -19,25 +16,9 @@ class InputPage extends StatefulWidget {
 class _InputPageState extends State<InputPage> {
   Color maleCardColor = inactiveCardColor;
   Color femaleCardColor = inactiveCardColor;
-
-  void updateColor(Genders gender) {
-    if (gender == Genders.male) {
-      if (maleCardColor == inactiveCardColor) {
-        maleCardColor = activeCardColor;
-        femaleCardColor = inactiveCardColor;
-      } else {
-        maleCardColor = inactiveCardColor;
-      }
-    }
-    if (gender == Genders.female) {
-      if (femaleCardColor == inactiveCardColor) {
-        femaleCardColor = activeCardColor;
-        maleCardColor = inactiveCardColor;
-      } else {
-        femaleCardColor = inactiveCardColor;
-      }
-    }
-  }
+  int hight = 180;
+  int weight = 65;
+  int age = 18;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +27,7 @@ class _InputPageState extends State<InputPage> {
         title: const Text('BMI CALCULATOR'),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
             child: Row(
@@ -99,11 +81,48 @@ class _InputPageState extends State<InputPage> {
           ),
           Expanded(
             child: Row(
-              children: const [
+              children: [
                 Expanded(
                   child: ReusableCard(
                     clr: activeCardColor,
-                    cardChild: Text('Card3'),
+                    cardChild: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'HEIGHT',
+                            style: lableTextStyle,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: [
+                              Text(hight.toString(), style: numberTextStyle),
+                              const Text('cm', style: lableTextStyle),
+                            ],
+                          ),
+                          SliderTheme(
+                            data: SliderTheme.of(context).copyWith(
+                              activeTrackColor: Colors.white,
+                              inactiveTrackColor: const Color(0xFF8D8E9E),
+                              thumbColor: const Color(0xFFEB1555),
+                              overlayColor: const Color(0x29EB1555),
+                              thumbShape: const RoundSliderThumbShape(
+                                  enabledThumbRadius: 15),
+                              overlayShape: const RoundSliderOverlayShape(
+                                  overlayRadius: 30),
+                            ),
+                            child: Slider(
+                                value: hight.toDouble(),
+                                min: 120.0,
+                                max: 220.0,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    hight = newValue.round();
+                                  });
+                                }),
+                          )
+                        ]),
                   ),
                 ),
               ],
@@ -111,18 +130,88 @@ class _InputPageState extends State<InputPage> {
           ),
           Expanded(
             child: Row(
-              children: const [
+              children: [
                 Expanded(
                   child: ReusableCard(
-                    clr: activeCardColor,
-                    cardChild: Text('Card4'),
-                  ),
+                      clr: activeCardColor,
+                      cardChild: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'WEIGHT',
+                            style: lableTextStyle,
+                          ),
+                          Text(
+                            weight.toString(),
+                            style: numberTextStyle,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              RoundIconButton(
+                                ico: FontAwesomeIcons.minus,
+                                changeWeight: () {
+                                  setState(() {
+                                    weight--;
+                                  });
+                                },
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              RoundIconButton(
+                                ico: FontAwesomeIcons.plus,
+                                changeWeight: () {
+                                  setState(() {
+                                    weight++;
+                                  });
+                                },
+                              )
+                            ],
+                          )
+                        ],
+                      )),
                 ),
                 Expanded(
                   child: ReusableCard(
-                    clr: activeCardColor,
-                    cardChild: Text('Card5'),
-                  ),
+                      clr: activeCardColor,
+                      cardChild: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'AGE',
+                            style: lableTextStyle,
+                          ),
+                          Text(
+                            age.toString(),
+                            style: numberTextStyle,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              RoundIconButton(
+                                ico: FontAwesomeIcons.minus,
+                                changeWeight: () {
+                                  setState(() {
+                                    age--;
+                                  });
+                                },
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              RoundIconButton(
+                                ico: FontAwesomeIcons.plus,
+                                changeWeight: () {
+                                  setState(() {
+                                    age++;
+                                  });
+                                },
+                              )
+                            ],
+                          )
+                        ],
+                      )),
                 ),
               ],
             ),
@@ -134,6 +223,32 @@ class _InputPageState extends State<InputPage> {
             margin: const EdgeInsets.only(top: 10),
           )
         ],
+      ),
+    );
+  }
+}
+
+class RoundIconButton extends StatelessWidget {
+  const RoundIconButton(
+      {required this.ico, required this.changeWeight, Key? key})
+      : super(key: key);
+
+  final IconData ico;
+  final Function changeWeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return RawMaterialButton(
+      child: Icon(ico),
+      onPressed: (() {
+        changeWeight();
+      }),
+      shape: const CircleBorder(),
+      fillColor: const Color(0xFF4C4F5E),
+      elevation: 6.0,
+      constraints: const BoxConstraints.tightFor(
+        width: 56,
+        height: 56,
       ),
     );
   }
